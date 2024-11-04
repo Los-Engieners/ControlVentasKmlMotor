@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "Crear Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div ng-controller="clienteCtrl" ng-init="init()">
+
+    <form name="formCliente" class="row justify-content-center mt-2 pb-2">
+        <input type="hidden" ng-model="Id" ng-init="Id='0'" />
+        <div class="col-lg-12 text-center bg-light">
+            <h2>{{ titulo }}</h2>
+        </div>
+
+        <div class="col-md-4 col-12 mt-2" ng-show="dataForm">
+            <label class="form-label">Género:</label>
+            <select class="form-control" ng-model="IdGenero" required>
+                <option value="" disabled selected>SELECCIONAR</option>
+                <option ng-repeat="obj in generos" ng-value="{{ obj.Id }}">  {{ obj.Nombre}} </option>
+            </select>
+        </div>
+
+        <div class="col-lg-4 col-12 mt-2">
+            <label class="fw-bold">Nombre:</label>
+            <input type="text" class="form-control" required ng-model="Nombre" />
+        </div>
+
+        <div class="col-lg-4 col-12 mt-2">
+            <label class="fw-bold">Apellido:</label>
+            <input type="text" class="form-control" required ng-model="Apellido" />
+        </div>
+
+        <div class="col-lg-2 col-6 mt-2">
+            <label class="fw-bold">DUI:</label>
+            <input type="text" class="form-control" placeholder="00000000-0" maxlength="10" pattern="^\d{8}-\d{1}$" required ng-model="DUI" />
+        </div>
+
+        <div class="col-lg-2 col-6 mt-2">
+            <label class="fw-bold">Teléfono:</label>
+            <input type="text" class="form-control" maxlength="8" required ng-model="Telefono" />
+        </div>
+
+        <div class="col-lg-2 col-6 mt-2">
+            <label class="fw-bold">Fecha de Nacimiento:</label>
+            <input type="date" class="form-control" ng-model="FechaNacimiento" />
+        </div>
+
+        <div class="col-lg-4 col-6 mt-2">
+            <label class="fw-bold">Dirección:</label>
+            <input type="text" class="form-control" required ng-model="Direccion" />
+        </div>
+
+        <div class="col-lg-12 col-12 text-center mt-3">
+            <button type="button" class="btn btn-success me-2" ng-click="guardar()">Guardar</button>
+            <button type="button" class="btn btn-danger" ng-click="cancelar()">Cancelar</button>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <script>
+        app.controller("clienteCtrl", function ($scope, $http) {
+            $scope.dataForm = true;
+            $scope.titulo = "Guardar Cliente";
+
+            $scope.limpiar = function () {
+                $scope.Id = "0";
+                $scope.IdGenero = "";
+                $scope.Nombre = "";
+                $scope.Apellido = "";
+                $scope.DUI = "";
+                $scope.Telefono = "";
+                $scope.FechaNacimiento = new Date();
+                $scope.Direccion = "";
+            }
+
+            $scope.init = function () {
+                $scope.cargarGeneros();
+                $scope.limpiar();
+            }
+
+            $scope.cargarGeneros = function () {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Genero")",
+                    data: {}
+                }
+
+                $http(request).then(function (response) {
+                    $scope.generos = angular.fromJson(response.data);
+                });
+            }
+
+            $scope.aviso = function (texto, response) {
+                var resultado = angular.fromJson(response.data);
+                validarResponse({
+                    texto: texto,
+                    resultado: resultado,
+                    func: function () {
+                        $scope.limpiar();
+                    }
+                });
+            }
+
+           $scope.guardar = function () {
+                if ($scope.formCliente.$valid) {
+                    var datos = {
+                        Id: $scope.Id,
+                        IdGenero: $scope.IdGenero,
+                        Nombre: $scope.Nombre,
+                        Apellido: $scope.Apellido,
+                        DUI: $scope.DUI,
+                        Telefono: $scope.Telefono,
+                        FechaNacimiento: $scope.FechaNacimiento,
+                        Direccion: $scope.Direccion
+                    };
+
+                    var request = {
+                        method: "POST",
+                        url: "@Url.Action("Guardar", "Cliente")",
+                        data: datos
+                    };
+
+                    $http(request).then(function (response) {
+                        // Mostrar mensaje de éxito
+                        $scope.aviso("Registro guardado exitosamente", response);
+
+                        // Redirigir después de un pequeño retraso
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("Index", "Venta")';
+                        }, 2000); // Esperar 2 segundos antes de redirigir
+                    }, function (response) {
+                        // Manejo de errores en el servidor
+                        catchJS(response);
+                    });
+                }
+            }
+
+            $scope.resetForm = function () {
+                $scope.limpiar();
+            }
+
+            $scope.cancelar = function () {
+                window.location.href = '@Url.Action("Index", "Venta")';
+            }
+        });
+    </script>
+}
+

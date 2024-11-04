@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+
+
+<div ng-show="modalVehiculo.visible">
+    <div class="modal fade shadow show d-block" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Vehiculo</h5>
+                    <button type="button" class="btn-close" aria-label="Close" ng-click="modalVehiculo.reset()"></button>
+                </div>
+                <div class="modal-body row justify-content-center">
+                    <div class="col-12">
+                        <input type="search" class="form-control" placeholder="buscar por nombre.."
+                               ng-change="modalVehiculo.search()" ng-model="modalVehiculo.filter" />
+                    </div>
+                    <div class="col-12 overflow-auto" style="height:400px;">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Modelo</th>
+                                    <th>Marca</th>
+                                    <th>Tipo de Vehículo/th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="obj in modalVehiculo.list">
+                                    <td>{{ obj.Id }}</td>
+                                    <td>{{ obj.Modelo.Nombre }}</td>
+                                    <td>{{ obj.Modelo.Marca.Nombre }}</td>
+                                    <td>{{ obj.Modelo.TipoAuto.Nombre }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary w-100" ng-click="modalVehiculo.selected(obj)">Seleccionar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+</div>
+
+

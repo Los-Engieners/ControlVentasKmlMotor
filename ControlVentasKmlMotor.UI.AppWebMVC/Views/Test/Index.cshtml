@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="testCtrl">
+    <form class="row justify-content-center mt-2 pb-2">
+
+        <div class="col-lg-12 mt-4 text-center bg-light">
+            <h2>Modal de Búsqueda</h2>
+        </div>
+
+        <div class="col-lg-6 col-12">
+            <label>Cliente</label>
+            <div class="input-group">
+                <input type="hidden" ng-model="IdCliente" disabled />
+                <input type="text" placeholder="Buscar cliente ..." ng-model="NombreCliente" class="form-control" readonly ng-click="modalCliente.open()" />
+                <button type="button" class="btn btn-light border" ng-click="modalCliente.clear()">x</button>
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-12 d-flex align-items-end">
+            <input type="text" disabled class="form-control" ng-model="Telefono" />
+        </div>
+
+        <div class="col-lg-12 mt-3 text-center">
+            <button type="button" class="btn btn-primary" onclick="redirectToPage()">Ir a otra vista</button>
+        </div>
+
+
+    </form>
+
+    <div ng-include="htmlCliente"> </div>
+
+</div>
+
+@section Scripts{
+    <script>
+        app.controller("testCtrl", function ($scope, $http) {
+
+            $scope.htmlCliente = "/Cliente/Modal";
+            $scope.modalCliente = modalSelect($scope, $http, {
+                name: "modalCliente",
+                url: "/Cliente/Buscar",
+                model: "IdCliente",
+                modelText: "NombreCliente",
+                propFilter: "Nombre",
+                propFilterAux: "Apellido",
+                propChange: "Telefono"
+            });
+        });
+
+        function redirectToPage() {
+            window.location.href = '/Cliente/Create'; 
+        }
+    </script>
+}

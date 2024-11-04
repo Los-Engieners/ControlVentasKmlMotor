@@ -1,0 +1,90 @@
+﻿@using ControlVentasKmlMotor.EN
+
+@{ 
+    string ValidarCargo()
+    {
+        return Session["CargoSesion"] != null ? Session["CargoSesion"].ToString() : "";
+    }
+
+}
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="row justify-content-around mb-3">
+    @if (ValidarCargo() == "Administrador")
+    {
+        <div class="card mt-3 col-4" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Ventas</h5>
+                <a href="~/Venta/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+
+        <div class="card mt-3 col-4" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Empleados</h5>
+                <a href="~/Empleado/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+
+        <div class="card mt-3" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Clientes</h5>
+                <a href="~/Cliente/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+
+        <div class="card mt-3" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Automóvil</h5>
+                <a href="~/Vehiculo/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+
+        <div class="card mt-3" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Modelo</h5>
+                <a href="~/Modelo/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+
+        <div class="card mt-3" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Historial de Ventas</h5>
+                <a href="~/Venta/HistorialVenta" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+    }
+    else if (ValidarCargo() == "Vendedor")
+    {
+        <div class="card mt-3 col-4" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Ventas</h5>
+                <a href="~/Venta/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+        <div class="card mt-3" style="width: 18rem;">
+            <img src="~/Images/image1.png" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Clientes</h5>
+                <a href="~/Cliente/Index" class="btn btn-primary">Ingresar</a>
+            </div>
+        </div>
+    }
+   
+
+
+</div>
+

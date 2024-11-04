@@ -1,0 +1,345 @@
+﻿
+@{
+    ViewBag.Title = "Empleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="empleadoCtrl" ng-init="init()" class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Empleado</strong>
+            </div>
+            <div class="card-body">
+                <form name="formEmpleado" class="needs-validation" novalidate>
+                    <input type="hidden" ng-model="Id" ng-init="Id='0'" />
+                    <div class="col-lg-12 text-center">
+                        <h2> {{ titulo }} </h2>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4" ng-show="dataForm">
+                            <label class="form-label">Género:</label>
+                            <select class="form-control" ng-model="IdGenero" required>
+                                <option value="" disabled selected>SELECCIONAR</option>
+                                <option ng-repeat="obj in generos" ng-value="{{ obj.Id }}">  {{ obj.Nombre}} </option>
+                            </select>
+                            <div class="invalid-feedback"> Por favor, seleccione un género. </div>
+                        </div>
+                        <div class="col-md-4" ng-show="dataForm">
+                            <label class="form-label">Sucursal:</label>
+                            <select class="form-control" ng-model="IdSucursal" required>
+                                <option value="" disabled selected>SELECCIONAR</option>
+                                <option ng-repeat="obj in sucursales" ng-value="{{ obj.Id }}">{{ obj.Nombre}} </option>
+                            </select>
+                            <div class="invalid-feedback"> Por favor, seleccione una sucursal. </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cargo:</label>
+                            <select class="form-control" id="example-select" ng-model="IdCargo" required>
+                                <option value="" disabled selected>SELECCIONAR</option>
+                                <option ng-repeat="obj in cargos" ng-value="{{ obj.Id }}">{{ obj.Nombre}} </option>
+                            </select>
+                            <div ng-show="dataForm" class="invalid-feedback"> Por favor, seleccione un cargo. </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Nombre:</label>
+                            <input class="form-control" type="text" id="validationCustom01" ng-model="Nombre" placeholder="Nombre" required>
+                            <div class="valid-feedback">Bien </div>
+                            <div ng-show="dataForm" class="invalid-feedback"> Por favor ingrese su nombre. </div>
+                        </div>
+                        <div class="col-md-4" ng-show="dataForm">
+                            <label class="form-label">Apellido:</label>
+                            <input class="form-control" type="text" ng-model="Apellido" placeholder="Apellido" required>
+                            <div class="valid-feedback">Bien </div>
+                            <div class="invalid-feedback"> Por favor, ingrese su apellido. </div>
+                        </div>
+                        <div class="col-md-4" ng-show="dataForm">
+                            <label class="form-label">Correo Electrónico:</label>
+                            <input class="form-control" type="email" ng-model="CorreoElectronico" id="validationCustomUsername" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico" required>
+                            <div class="invalid-feedback"> Por favor, ingrese una dirección de correo electrónico. </div>
+                        </div>
+                        <div class="col-md-4" ng-show="dataForm">
+                            <label class="form-label">Clave:</label>
+                            <input class="form-control" type="password" ng-model="Clave" placeholder="Clave" required>
+                            <div class="invalid-feedback"> Por favor, ingrese su contraseña. </div>
+                        </div>
+                        <div class="col-md-4 mt-4" ng-hide="dataForm">
+                            <button type="button" class="btn btn-primary me-4" ng-click="buscar()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                            <button type="button" class="btn btn-success" ng-click="initForm()">
+                                <i class="fas fa-user-plus"></i> Nuevo
+                            </button>
+                        </div>
+                        <div class="col-lg-12 col-12 text-center mt-3" ng-show="dataForm">
+                            <button type="submit" class="btn btn-success me-2" ng-click="guardar()">Guardar</button>
+                            <button type="button" class="btn btn-danger" ng-click="resetForm()">Cancelar</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="row my-4" ng-hide="dataForm">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="mb-2 text-center">Lista de Empleados</h3>
+                        <table class="table datatables" id="dataTable-1">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Género</th>
+                                    <th>Sucursal</th>
+                                    <th>Cargo</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Correo Electrónico</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="obj in lista ">
+                                    <td>{{ obj.Id }}</td>
+                                    <td>{{ obj.Genero.Nombre }}</td>
+                                    <td>{{ obj.Sucursal.Nombre }}</td>
+                                    <td>{{ obj.Cargo.Nombre }}</td>
+                                    <td>{{ obj.Nombre }}</td>
+                                    <td>{{ obj.Apellido }}</td>
+                                    <td>{{ obj.CorreoElectronico }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
+                                            <i class="fa fa-pen text-white"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" ng-click="eliminar(obj.Id)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul uib-pagination total-items="totalItems" items-per-page="10"
+                            boundary-links="false" direction-links="true"
+                            ng-model="currentPage" ng-change="pageChanged()"
+                            class="justify-content-center">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+
+@section Scripts{
+    <script>
+
+        app.controller("empleadoCtrl", function ($scope, $http, $window) {
+        $scope.dataForm = false;
+
+            $scope.listaBase = [];
+            $scope.generos = [];
+            $scope.sucursales = [];
+            $scope.cargos = [];
+
+            $scope.lista = [];
+            $scope.currentPage = 1;
+            $scope.numPerPage = 10;
+
+            $scope.limpiar = function () {
+                $scope.Id = "0";
+                $scope.IdGenero = "";
+                $scope.IdSucursal = "";
+                $scope.IdCargo = "";
+                $scope.Nombre = "";
+                $scope.Apellido = "";
+                $scope.CorreoElectronico = "";
+                $scope.Clave = "";
+            }
+
+            $scope.initForm = function () {
+                $scope.dataForm = true;
+                $scope.titulo = ($scope.Id == 0 ? "Guardar Empleado" : "Editar Empleado");
+                if ($scope.Id == 0) {
+                    $scope.limpiar();
+                }
+            }
+
+            $scope.resetForm = function () {
+                $scope.dataForm = false;
+                $scope.titulo = "Buscar empleados";
+                $scope.limpiar();
+            }
+
+            $scope.init = function () {
+                $scope.titulo = "Buscar empleados"
+                $scope.buscar();
+                $scope.cargarGeneros();
+                $scope.cargarSucursales();
+                $scope.cargarCargos();
+            }
+
+            $scope.cargarGeneros = function () {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Genero")",
+                    data: {}
+                }
+
+                $http(request).then(function (response) {
+                    $scope.generos = angular.fromJson(response.data)
+                });
+            }
+
+            $scope.cargarSucursales = function () {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Sucursal")",
+                    data: {}
+                }
+
+                $http(request).then(function (response) {
+                    $scope.sucursales = angular.fromJson(response.data)
+                });
+            }
+
+            $scope.cargarCargos = function () {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Cargo")",
+                    data: {}
+                }
+
+                $http(request).then(function (response) {
+                    $scope.cargos = angular.fromJson(response.data)
+                });
+            }
+
+            $scope.buscar = function () {
+
+                var request = {
+                method: "POST",
+                url: "@Url.Action("Buscar", "Empleado")",
+                    data: {
+                    Nombre: $scope.Nombre,
+                    Apelllido: $scope.Apellido,
+                    IdCargo: $scope.IdCargo,
+                    CorreoElectronico: $scope.CorreoElectronoico,
+                    }
+                };
+
+                $http(request).then(function (response) {
+                    $scope.listaBase = angular.fromJson(response.data);
+
+                    $scope.totalItems = $scope.listaBase.length;
+                    $scope.$watch("currentPage + numPerPage", function () {
+
+                        var inicioPag = (($scope.currentPage - 1) * $scope.numPerPage);
+                        var finPag = inicioPag + $scope.numPerPage;
+                        $scope.lista = $scope.listaBase.slice(inicioPag, finPag);
+
+                    });
+                });
+            }
+
+            $scope.aviso = function (texto, response) {
+                var resultado = angular.fromJson(response.data);
+                validarResponse({
+                    texto: texto,
+                    resultado: resultado,
+                    func: function () {
+                        $scope.limpiar();
+                        $scope.buscar();
+                        $window.location.href = "@Url.Action("Index", "Empleado")";
+                    }
+                });
+            }
+            $scope.guardar = function () {
+                if ($scope.formEmpleado.$valid) {
+
+                    // Obtener datos del formulario
+                    var datos = {
+                        Id: $scope.Id,
+                        IdGenero: $scope.IdGenero,
+                        IdSucursal: $scope.IdSucursal,
+                        IdCargo: $scope.IdCargo,
+                        Nombre: $scope.Nombre,
+                        Apellido: $scope.Apellido,
+                        CorreoElectronico: $scope.CorreoElectronico,
+                        Clave: $scope.Clave,
+                    };
+
+                    if (datos.Id == 0) {
+                        var request = {
+                            method: "POST",
+                            url: "@Url.Action("Guarda", "Empleado")",
+                            data: datos
+                    };
+
+                    $http(request).then(function (response) {
+                        // No hay error en el servidor
+                        $scope.aviso("Registro guardado exitosamente", response);
+                    }, function (response) {
+                        // Hay error en el servidor
+                        catchJS(response);
+                    });
+
+                    } else {
+                        var request = {
+                            method: "POST",
+                            url: "@Url.Action("Modificar", "Empleado")",
+                            data: datos,
+                    };
+
+                    $http(request).then(function (response) {
+                        $scope.aviso("Registro actualizado exitosamente", response);
+                        $scope.resetForm();
+                    }, function (response) {
+                        // Hay error en el servidor
+                        catchJS(response);
+                    });
+                    }
+                }
+            };
+
+        $scope.obtenerPorId = function(id) {
+            var request = {
+                method: "POST",
+                url: "@Url.Action("ObtenerPorId","Empleado")",
+                data: { pId: id },
+            };
+            $http(request).then(function (response) {
+                var obj = angular.fromJson(response.data);
+
+                $scope.Id = obj.Id;
+                $scope.IdGenero = parseInt(obj.IdGenero);
+                $scope.IdSucursal = parseInt(obj.IdSucursal);
+                $scope.IdCargo = parseInt(obj.IdCargo);
+                $scope.Nombre = obj.Nombre;
+                $scope.Apellido = obj.Apellido;
+                $scope.CorreoElectronico = obj.CorreoElectronico;
+                $scope.Clave = obj.Clave;
+                $scope.initForm();
+
+            });
+        }
+
+        $scope.eliminar = function (id) {
+            if (confirm("¿Está seguro de eliminar el registro seleccionado?")) {
+
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Eliminar", "Empleado")",
+                    data: { Id: id },
+                };
+                $http(request).then(function (response) {
+                    $scope.aviso("Registro eliminado exitosamente", response);
+
+                }, function (response) {
+                    catchJS(response);
+                });
+            }
+            }
+
+    });
+    </script>
+}

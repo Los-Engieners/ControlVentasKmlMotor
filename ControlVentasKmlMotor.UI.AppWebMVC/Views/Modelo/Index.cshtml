@@ -1,0 +1,293 @@
+﻿
+@{
+    ViewBag.Title = "Modelos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="modeloCtrl" ng-init="init()" class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Modelo</strong>
+            </div>
+            <div class="card-body">
+                <form name="formModelo" class="needs-validation" novalidate>
+                    <input type="hidden" ng-model="Id" ng-init="Id='0'" />
+                    <div class="col-lg-12 text-center ">
+                        <h2>{{ titulo }}</h2>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Marca:</label>
+                            <select class="form-control" ng-model="IdMarca" required>
+                                <option value="" disabled selected>SELECCIONAR</option>
+                                <option ng-repeat="obj in marcas" ng-value="{{ obj.Id }}">  {{ obj.Nombre}} </option>
+                            </select>
+                            <div class="invalid-feedback"> Por favor, seleccione una marca. </div>
+                        </div>
+                        <div class="form-group col-md-6" ng-show="dataForm">
+                            <label class="form-label">Tipo de Auto:</label>
+                            <select class="form-control" ng-model="IdTipoAuto" required>
+                                <option value="">SELECCIONAR</option>
+                                <option ng-repeat="obj in tipoAutos " ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback"> Por favor, seleccione un tipo de vehículo. </div>
+                        </div>
+                        <div class="col-md-6" ng-show="dataForm">
+                            <label class="form-label">Nombre:</label>
+                            <input type="text" class="form-control" required ng-model="Nombre" />
+                            <div class="valid-feedback">Bien </div>
+                            <div class="invalid-feedback"> Por favor ingrese el nombre del modelo. </div>
+                        </div>
+                        <div class="col-md-6 mt-4" ng-hide="dataForm">
+                            <button type="button" class="btn btn-primary me-4" ng-click="buscar()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                            <button type="button" class="btn btn-secondary" ng-click="initForm()">
+                                <i class="fas fa-user-plus"></i> Nuevo
+                            </button>
+                        </div>
+                        <div class="col-lg-12 col-12 text-center mt-3" ng-show="dataForm">
+                            <button type="button" class="btn btn-primary me-2" ng-click="guardar()">Guardar</button>
+                            <button type="button" class="btn btn-danger" ng-click="resetForm()">Cancelar</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+        <div class="row my-4" ng-hide="dataForm">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="mb-2 text-center">Lista de Modelos</h3>
+                        <table class="table datatables" id="dataTable-1">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Marca</th>
+                                    <th>Tipo de Vehículo</th>
+                                    <th>Nombre</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="obj in lista ">
+                                    <td>{{ obj.Id }}</td>
+                                    <td>{{ obj.Marca.Nombre }}</td>
+                                    <td>{{ obj.TipoAuto.Nombre }}</td>
+                                    <td>{{ obj.Nombre }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
+                                            <i class="fa fa-pen text-white"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" ng-click="eliminar(obj.Id)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul uib-pagination total-items="totalItems" items-per-page="10"
+                            boundary-links="false" direction-links="true"
+                            ng-model="currentPage" ng-change="pageChanged()"
+                            class="justify-content-center">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+            app.controller("modeloCtrl", function ($scope, $http) {
+                $scope.dataForm = false;
+
+                $scope.listaBase = [];
+                $scope.marcas = [];
+                $scope.tipoAutos = [];
+                $scope.lista = [];
+                $scope.currentPage = 1;
+                $scope.numPerPage = 10;
+
+                $scope.limpiar = function () {
+                    $scope.Id = "0";
+                    $scope.IdMarca = "";
+                    $scope.IdTipoAuto = "";
+                    $scope.Nombre = "";
+                }
+
+                $scope.initForm = function () {
+                    $scope.dataForm = true;
+                    $scope.titulo = ($scope.Id == 0 ? "Guardar Modelo" : "Editar Modelo");
+                    if ($scope.Id == 0) {
+                        $scope.limpiar();
+                    }
+                }
+
+              $scope.resetForm = function () {
+                $scope.dataForm = false;
+                $scope.titulo = "Buscar Modelos";
+                $scope.limpiar();
+              }
+
+              $scope.init = function () {
+                $scope.titulo = "Buscar Modelos"
+                  $scope.cargarMarcas();
+                  $scope.cargarTipoAutos();
+
+              }
+
+              $scope.cargarMarcas = function () {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Marca")",
+                    data: {}
+                }
+
+                $http(request).then(function (response) {
+                    $scope.marcas = angular.fromJson(response.data)
+                });
+              }
+                $scope.cargarTipoAutos = function () {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "TipoAuto")",
+                    data: {}
+                }
+
+                $http(request).then(function (response) {
+                $scope.tipoAutos = angular.fromJson(response.data)
+                });
+                }
+
+              $scope.buscar = function () {
+
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Modelo")",
+                      data: {
+                        Nombre: $scope.Nombre,
+                        IdMarca: $scope.IdMarca,
+                        IdTipoAuto: $scope.IdTipoAuto,
+                      }
+                };
+
+                $http(request).then(function (response) {
+                    $scope.listaBase = angular.fromJson(response.data);
+
+                    $scope.totalItems = $scope.listaBase.length;
+                    $scope.$watch("currentPage + numPerPage", function () {
+
+                        var inicioPag = (($scope.currentPage - 1) * $scope.numPerPage);
+                        var finPag = inicioPag + $scope.numPerPage;
+                        $scope.lista = $scope.listaBase.slice(inicioPag, finPag);
+
+                    });
+                });
+              }
+
+              $scope.aviso = function (texto, response) {
+                var resultado = angular.fromJson(response.data);
+                validarResponse({
+                    texto: texto,
+                    resultado: resultado,
+                    func: function () {
+                        $scope.limpiar();
+                        $scope.buscar();
+                    }
+                });
+              }
+
+              $scope.guardar = function () {
+
+                if ($scope.formModelo.$valid) {
+
+                    //Obtener  datos  del formulario
+                    var datos = {
+                        Id: $scope.Id,
+                        IdMarca: $scope.IdMarca,
+                        IdTipoAuto: $scope.IdTipoAuto,
+                        Nombre: $scope.Nombre,
+                    };
+
+                    if (datos.Id == 0) {
+
+                        var request = {
+                            method: "POST",
+                            url: "@Url.Action("Guardar", "Modelo")",
+                            data: datos
+                        };
+
+                        $http(request).then(function (response) {
+                            //No hay error en el servidor
+                            $scope.aviso("Modelo guardado exitosamente", response);
+                        }, function (response) {
+                             //Hay error en el servidor
+                            catchJS(response);
+                        });
+
+                          } else {
+                          var request = {
+                            method: "POST",
+                            url: "@Url.Action("Modificar", "Modelo")",
+                            data: datos,
+                          };
+
+                          $http(request).then(function (response) {
+
+                              $scope.aviso("Registro actualizado exitosamente", response);
+                              $scope.resetForm();
+
+                          }, function (response) {
+                              //Hay error en el servidor
+                              catchJS(response);
+                          });
+                    }
+
+                }
+
+              }
+
+              $scope.obtenerPorId = function(id) {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("ObtenerPorId","Modelo")",
+                    data: { pId: id },
+                };
+                $http(request).then(function (response) {
+                    var obj = angular.fromJson(response.data);
+
+                    $scope.Id = obj.Id;
+                    $scope.IdMarca = parseInt(obj.IdMarca);
+                    $scope.IdTipoAuto = parseInt(obj.IdTipoAuto);
+                    $scope.Nombre = obj.Nombre;
+
+                    $scope.initForm();
+
+                });
+              }
+
+              $scope.eliminar = function (id) {
+                if (confirm("¿Está seguro de eliminar el registro seleccionado?")) {
+
+                    var request = {
+                        method: "POST",
+                        url: "@Url.Action("Eliminar", "Modelo")",
+                        data: { Id: id },
+                    };
+                    $http(request).then(function (response) {
+                        $scope.aviso("Registro eliminado exitosamente", response);
+
+                    }, function (response) {
+                        catchJS(response);
+                    });
+                }
+              }
+
+            });
+    </script>
+}

@@ -1,0 +1,175 @@
+﻿
+@{
+    ViewBag.Title = "Historial de Ventas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="ventaCtrl" ng-init="init()">
+    <form class="row g-3" name="formVenta">
+        <div class="mt-5 text-center bg-light">
+            <h2>{{ titulo }}</h2>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Cliente:</label>
+            <select class="form-control" ng-model="IdCliente" required>
+                <option value="" disabled selected>SELECCIONAR</option>
+                <option ng-repeat="obj in clientes" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Sucursal:</label>
+            <select class="form-control" ng-model="IdSucursal" required>
+                <option value="" disabled selected>SELECCIONAR</option>
+                <option ng-repeat="obj in sucursales" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Vehículo:</label>
+            <select class="form-control" ng-model="IdVehiculo" required>
+                <option value="" disabled selected>SELECCIONAR</option>
+                <option ng-repeat="obj in vehiculos" ng-value="{{ obj.Id }}">{{ obj.Modelo }}</option>
+            </select>
+        </div>
+        <div class="col-lg-12 col-12 text-center mt-3">
+            <button type="button" class="btn btn-primary me-2" ng-click="buscar()">Buscar</button>
+        </div>
+    </form>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-lg-12 col-12 table-responsive">
+            <h3 class="mb-2 text-center">Historial de Ventas</h3>
+            <table class="table table-striped border">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>No. Factura</th>
+                        <th>Cliente</th>
+                        <th>Sucursal</th>
+                        <th>Estatus</th>
+                        <th>Tipo de Pago</th>
+                        <th>Total</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="obj in listaVentas">
+                        <td>{{ obj.NoFactura }}</td>
+                        <td>{{ obj.Cliente.Nombre }}</td>
+                        <td>{{ obj.Sucursal.Nombre }}</td>
+                        <td>{{ obj.Estatus }}</td>
+                        <td>{{ obj.TipoPago.Nombre }}</td>
+                        <td>{{ obj.Total | currency }}</td>
+                        <td>{{ obj.FechaHora.replace('/Date(','').replace(')/','') | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul uib-pagination total-items="totalItems" items-per-page="10"
+                boundary-links="false" direction-links="true"
+                ng-model="currentPage" ng-change="pageChanged()"
+                class="justify-content-center">
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        app.controller("ventaCtrl", function($scope, $http) {
+            $scope.listaVentasBase = [];
+            $scope.clientes = [];
+            $scope.sucursales = [];
+            $scope.vehiculos = [];
+            $scope.tipoPagos = [];
+
+            $scope.listaVentas = [];
+            $scope.currentPage = 1;
+            $scope.numPerPage = 10;
+
+            $scope.init = function() {
+                $scope.titulo = "Historial de Ventas";
+                $scope.cargarClientes();
+                $scope.cargarSucursales();
+                $scope.cargarVehiculos();
+            };
+
+            $scope.cargarClientes = function() {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Cliente")",
+                    data: {}
+                };
+
+                $http(request).then(function(response) {
+                    $scope.clientes = angular.fromJson(response.data);
+                });
+            };
+
+            $scope.cargarSucursales = function() {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Sucursal")",
+                    data: {}
+                };
+
+                $http(request).then(function(response) {
+                    $scope.sucursales = angular.fromJson(response.data);
+                });
+            };
+
+            $scope.cargarVehiculos = function() {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Vehiculo")",
+                    data: {}
+                };
+
+                $http(request).then(function(response) {
+                    $scope.vehiculos = angular.fromJson(response.data);
+                });
+            };
+
+            $scope.cargarTipoPagos = function() {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "TipoPago")",
+                    data: {}
+                };
+
+                $http(request).then(function(response) {
+                    $scope.sucursales = angular.fromJson(response.data);
+                });
+            };
+
+            $scope.buscar = function() {
+                var request = {
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Venta")",
+                    data: {
+                        IdCliente: $scope.IdCliente,
+                        IdSucursal: $scope.IdSucursal,
+                        IdVehiculo: $scope.IdVehiculo
+                    }
+                };
+
+                $http(request).then(function(response) {
+                    $scope.listaVentasBase = angular.fromJson(response.data);
+                    $scope.totalItems = $scope.listaVentasBase.length;
+                    $scope.$watch("currentPage + numPerPage", function() {
+                        var inicioPag = (($scope.currentPage - 1) * $scope.numPerPage);
+                        var finPag = inicioPag + $scope.numPerPage;
+                        $scope.listaVentas = $scope.listaVentasBase.slice(inicioPag, finPag);
+                    });
+                });
+            };
+
+            $scope.pageChanged = function() {
+                var inicioPag = (($scope.currentPage - 1) * $scope.numPerPage);
+                var finPag = inicioPag + $scope.numPerPage;
+                $scope.listaVentas = $scope.listaVentasBase.slice(inicioPag, finPag);
+            };
+        });
+
+    </script>
+
+}
