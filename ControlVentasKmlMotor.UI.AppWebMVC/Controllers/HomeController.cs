@@ -14,6 +14,17 @@ namespace ControlVentasKmlMotor.UI.AppWebMVC.Controllers
             return View();
         }
 
+        public ActionResult Acerca()
+        {
+            return View();
+        }
+
+        public ActionResult Contacto()
+        {
+            return View();
+        }
+
+
         public ActionResult Dashboard()
         {
             return View();
