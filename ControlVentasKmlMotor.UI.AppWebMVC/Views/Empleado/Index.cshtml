@@ -271,7 +271,7 @@
                     if (datos.Id == 0) {
                         var request = {
                             method: "POST",
-                            url: "@Url.Action("Guarda", "Empleado")",
+                            url: "@Url.Action("Guardar", "Empleado")",
                             data: datos
                     };
 
@@ -323,22 +323,48 @@
             });
         }
 
-        $scope.eliminar = function (id) {
-            if (confirm("¿Está seguro de eliminar el registro seleccionado?")) {
+                  $scope.eliminar = function (Id) {
+                    // Mostrar cuadro de confirmación
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¡No podrás revertir esta acción!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, eliminarlo',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Si el usuario confirma, se procede con la eliminación
+                            var request = {
+                                method: "POST",
+                                url: "@Url.Action("Eliminar", "Empleado")",
+                                data: { Id: Id }
+                            };
 
-                var request = {
-                    method: "POST",
-                    url: "@Url.Action("Eliminar", "Empleado")",
-                    data: { Id: id },
-                };
-                $http(request).then(function (response) {
-                    $scope.aviso("Registro eliminado exitosamente", response);
+                            $http(request).then(function (response) {
+                                $scope.buscar(); // Recargar la lista de vehículos
+                                $scope.aviso('Eliminado exitosamente', response.data);
 
-                }, function (response) {
-                    catchJS(response);
-                });
-            }
-            }
+                                // Mostrar mensaje de confirmación con SweetAlert
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'El Empleado ha sido eliminado.',
+                                    'success'
+                                );
+                            }, function (error) {
+                                // Manejo de errores
+                                Swal.fire(
+                                    'Error',
+                                    'Hubo un problema al eliminar el empleadoo.',
+                                    'error'
+                                );
+                            });
+                        }
+                    });
+                }
+
 
     });
     </script>
