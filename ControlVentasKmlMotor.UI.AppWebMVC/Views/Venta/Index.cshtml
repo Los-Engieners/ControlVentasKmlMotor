@@ -20,7 +20,11 @@
                         <div class="form-row">
                             <div class="form-group col-md-2">
                                 <label class="form-label">No. Factura</label>
-                                <input type="number" class="form-control" ng-model="NoFactura" min="1" disabled>
+
+                                <input type="text" class="form-control" id="NoFactura" ng-model="NoFactura" ng-init="NoFactura = NoFactura" />
+                                
+
+
                             </div>
 
                             <div class="col-md-6">
@@ -156,6 +160,30 @@
 
 @section Scripts {
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function generarCodigoUnico() {
+                const fecha = new Date();
+                let codigo = '' + fecha.getHours() + fecha.getMinutes() + fecha.getSeconds();
+
+                if (codigo.length > 5) {
+                    codigo = codigo.slice(-5);
+                } else {
+                    codigo = codigo.padStart(5, '0');
+                }
+
+                // Asigna el valor al modelo en Angular
+                $scope.$apply(function () {
+                    $scope.NoFactura = codigo;
+                });
+            }
+
+            generarCodigoUnico();
+        });
+
+
+    </script>
+
+    <script>
         app.controller("ventaCtrl", function ($scope, $http) {
             $scope.dataForm = false;
 
@@ -166,6 +194,8 @@
             $scope.vehiculos = [];
             $scope.serviciosExtra = [];
             $scope.sucursales = [];
+
+            
 
             $scope.htmlCliente = "/Cliente/Modal";
             $scope.modalCliente = modalSelect($scope, $http, {
@@ -179,6 +209,12 @@
             });
 
             $scope.cargarClientes = function () {
+                // Función init para inicializar valores
+                $scope.init = function () {
+
+                    
+
+                };
                 var request = {
                     method : "POST",
                     url : "@Url.Action("Buscar", "Cliente")",
@@ -187,6 +223,7 @@
                 $http(request).then(function (response) {
                     $scope.clientes = angular.fromJson(response.data);
                 });
+
             }
 
             $scope.cargarVehiculos = function () {
@@ -286,7 +323,7 @@
             }
 
             $scope.limpiar = function () {
-                $scope.NoFactura = '0';
+                $scope.NoFactura = '';
                 $scope.IdCliente = '';
                 $scope.IdVehiculo = '';
                 $scope.IdTipoPago = '';
@@ -310,7 +347,7 @@
 
                     var detalleVenta = {
                         //Id: $scope.Id,
-                        //NoFactura: $scope.NoFactura,
+                        NoFactura: $scope.NoFactura,
                         IdServicioExtra: $scope.IdServicioExtra,
                         ServicioExtra: { Nombre: $scope.NombreServicio },
                         Cantidad: $scope.Cantidad,

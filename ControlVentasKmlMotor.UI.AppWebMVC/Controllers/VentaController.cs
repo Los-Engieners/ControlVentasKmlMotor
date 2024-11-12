@@ -14,8 +14,13 @@ namespace ControlVentasKmlMotor.UI.AppWebMVC.Controllers
     {
         VentaBL ventaBL = new VentaBL();
         // GET: Venta
+
+        
+
         public ActionResult Index()
         {
+
+            
             return View();
         }
 

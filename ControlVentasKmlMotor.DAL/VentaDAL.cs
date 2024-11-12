@@ -22,10 +22,10 @@ namespace ControlVentasKmlMotor.DAL
 
 
                 SqlCommand comando = ComunDB.ObtenerComando(transaccion);
-                comando.CommandText = @"INSERT INTO Ventas (IdCliente, IdEmpleado, IdVehiculo, IdSucursal, IdTipoPago, FechaHora, Precio, Total, Estatus, Estado)
-                                      VALUES ( @IdCliente, @IdEmpleado, @IdVehiculo, @IdSucursal, @IdTipoPago, @FechaHora, @Precio, @Total, @Estatus, 1);";
+                comando.CommandText = @"INSERT INTO Ventas (NoFactura, IdCliente, IdEmpleado, IdVehiculo, IdSucursal, IdTipoPago, FechaHora, Precio, Total, Estatus, Estado)
+                                      VALUES ( @NoFactura, @IdCliente, @IdEmpleado, @IdVehiculo, @IdSucursal, @IdTipoPago, @FechaHora, @Precio, @Total, @Estatus, 1);";
 
-                //comando.Parameters.AddWithValue("@NoFactura", pVenta.NoFactura);
+                comando.Parameters.AddWithValue("@NoFactura", pVenta.NoFactura);
                 comando.Parameters.AddWithValue("@IdCliente", pVenta.IdCliente);
                 comando.Parameters.AddWithValue("@IdEmpleado", pVenta.IdEmpleado);
                 comando.Parameters.AddWithValue("@IdVehiculo", pVenta.IdVehiculo);
