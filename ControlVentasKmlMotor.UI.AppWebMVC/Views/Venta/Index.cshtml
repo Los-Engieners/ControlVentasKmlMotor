@@ -16,17 +16,12 @@
             <div class="card-body">
                 <form name="formVenta" class="needs-validation" novalidate>
                     <fieldset class="bg-light p-3 mt-4 mb-4 border rounded">
-                        <legend class="px-2">Cabecera de la factura</legend>
+                        <legend class="px-2">Venta</legend>
                         <div class="form-row">
                             <div class="form-group col-md-2">
                                 <label class="form-label">No. Factura</label>
-
-                                <input type="text" class="form-control" id="NoFactura" ng-model="NoFactura" ng-init="NoFactura = NoFactura" />
-                                
-
-
+                                <input type="text" class="form-control" ng-model="NoFactura" disabled>
                             </div>
-
                             <div class="col-md-6">
                                 <label>Cliente</label>
                                 <div class="input-group">
@@ -159,29 +154,6 @@
 </div>
 
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function generarCodigoUnico() {
-                const fecha = new Date();
-                let codigo = '' + fecha.getHours() + fecha.getMinutes() + fecha.getSeconds();
-
-                if (codigo.length > 5) {
-                    codigo = codigo.slice(-5);
-                } else {
-                    codigo = codigo.padStart(5, '0');
-                }
-
-                // Asigna el valor al modelo en Angular
-                $scope.$apply(function () {
-                    $scope.NoFactura = codigo;
-                });
-            }
-
-            generarCodigoUnico();
-        });
-
-
-    </script>
 
     <script>
         app.controller("ventaCtrl", function ($scope, $http) {
@@ -208,13 +180,17 @@
                 propChange: "Telefono"
             });
 
+            $scope.generarCodigoFactura = function () {
+                const fecha = new Date();
+                const año = fecha.getFullYear();
+                const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                const dia = String(fecha.getDate()).padStart(2, '0');
+                const random = Math.floor(100 + Math.random() * 900); // Número aleatorio de 3 dígitos
+
+                $scope.NoFactura = `${año}${mes}${dia}${random}`;
+            };
+
             $scope.cargarClientes = function () {
-                // Función init para inicializar valores
-                $scope.init = function () {
-
-                    
-
-                };
                 var request = {
                     method : "POST",
                     url : "@Url.Action("Buscar", "Cliente")",
@@ -284,18 +260,20 @@
                 }
             }
 
-            $scope.cargarPrecioAuto = function (p) {
+            $scope.cargarPrecioAuto = function () {
                 if ($scope.IdVehiculo > 0) {
-
-                    var selected = $scope.vehiculos.find((p) => p.Id == $scope.IdVehiculo);
+                    const selected = $scope.vehiculos.find((p) => p.Id == $scope.IdVehiculo);
                     $scope.NombreVehiculo = selected.Nombre;
                     $scope.Precio = selected.Precio;
-                }
-                else {
+
+                    // Generar código de factura al seleccionar un vehículo
+                    $scope.generarCodigoFactura();
+                } else {
                     $scope.NombreVehiculo = '';
                     $scope.Precio = '';
                 }
-            }
+            };
+
 
             $scope.calcularTotal = function () {
                 $scope.total = 0;
@@ -421,7 +399,6 @@
                     console.log($scope.total);
                     console.log($scope.Total);
 
-
                     $http(request).then(function (response) {
                         $scope.aviso2("Venta registrada exitosamente", response);
 
@@ -431,6 +408,7 @@
 
                 }
             }
+
             $scope.init = function () {
 
                 $scope.cargarTiposPago();
