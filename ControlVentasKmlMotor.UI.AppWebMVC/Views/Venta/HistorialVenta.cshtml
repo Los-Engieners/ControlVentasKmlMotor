@@ -4,77 +4,87 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div ng-controller="ventaCtrl" ng-init="init()">
-    <form class="row g-3" name="formVenta">
-        <div class="mt-5 text-center bg-light">
-            <h2>{{ titulo }}</h2>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Cliente:</label>
-            <select class="form-control" ng-model="IdCliente" required>
-                <option value="" disabled selected>SELECCIONAR</option>
-                <option ng-repeat="obj in clientes" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Sucursal:</label>
-            <select class="form-control" ng-model="IdSucursal" required>
-                <option value="" disabled selected>SELECCIONAR</option>
-                <option ng-repeat="obj in sucursales" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Vehículo:</label>
-            <select class="form-control" ng-model="IdVehiculo" required>
-                <option value="" disabled selected>SELECCIONAR</option>
-                <option ng-repeat="obj in vehiculos" ng-value="{{ obj.Id }}">{{ obj.Modelo }}</option>
-            </select>
-        </div>
-        <div class="col-lg-12 col-12 text-center mt-3">
-            <button type="button" class="btn btn-primary me-2" ng-click="buscar()">Buscar</button>
-        </div>
-    </form>
+<div ng-controller="ventaCtrl" ng-init="init()" class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Historial de ventas</strong>
+            </div>
+            <form class="row g-3" name="formVenta">
+                <div class="mt-5 text-center bg-light">
 
-    <div class="row justify-content-center mt-3">
-        <div class="col-lg-12 col-12 table-responsive">
-            <h3 class="mb-2 text-center">Historial de Ventas</h3>
-            <table class="table table-striped border">
-                <thead class="bg-dark text-white">
-                    <tr>
-                        <th>No. Factura</th>
-                        <th>Cliente</th>
-                        <th>Sucursal</th>
-                        <th>Estatus</th>
-                        <th>Tipo de Pago</th>
-                        <th>Total</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="obj in listaVentas">
-                        <td>{{ obj.NoFactura }}</td>
-                        <td>{{ obj.Cliente.Nombre }}</td>
-                        <td>{{ obj.Sucursal.Nombre }}</td>
-                        <td>{{ obj.Estatus }}</td>
-                        <td>{{ obj.TipoPago.Nombre }}</td>
-                        <td>{{ obj.Total | currency }}</td>
-                        <td>{{ obj.FechaHora.replace('/Date(','').replace(')/','') | date: 'dd/MM/yyyy' }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul uib-pagination total-items="totalItems" items-per-page="10"
-                boundary-links="false" direction-links="true"
-                ng-model="currentPage" ng-change="pageChanged()"
-                class="justify-content-center">
-            </ul>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cliente:</label>
+                    <select class="form-control" ng-model="IdCliente" required>
+                        <option value="" disabled selected>SELECCIONAR</option>
+                        <option ng-repeat="obj in clientes" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Sucursal:</label>
+                    <select class="form-control" ng-model="IdSucursal" required>
+                        <option value="" disabled selected>SELECCIONAR</option>
+                        <option ng-repeat="obj in sucursales" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-12 justify-content-center d-flex align-items-end mt-2" ng-hide="dataForm">
+                    <button type="button" class="btn btn-primary me-2" ng-click="buscar()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+                @*<div class="col-md-4">
+                    <label class="form-label">Vehículo:</label>
+                    <select class="form-control" ng-model="IdVehiculo" required>
+                        <option value="" disabled selected>SELECCIONAR</option>
+                        <option ng-repeat="obj in vehiculos" ng-value="{{ obj.Id }}">{{ obj.Modelo }}</option>
+                    </select>
+                </div>*@
+                
+
+            <div class="row justify-content-center mt-3">
+                <div class="col-lg-12 col-12 table-responsive">
+                    <h3 class="mb-2 text-center">Historial de Ventas</h3>
+                    <table class="table table-striped border">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th>No. Factura</th>
+                                <th>Cliente</th>
+                                <th>Sucursal</th>
+                                <th>Estatus</th>
+                                <th>Tipo de Pago</th>
+                                <th>Total</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="obj in listaVentas">
+                                <td>{{ obj.NoFactura }}</td>
+                                <td>{{ obj.Cliente.Nombre }}</td>
+                                <td>{{ obj.Sucursal.Nombre }}</td>
+                                <td>{{ obj.Estatus }}</td>
+                                <td>{{ obj.TipoPago.Nombre }}</td>
+                                <td>{{ obj.Total | currency }}</td>
+                                <td>{{ obj.FechaHora.replace('/Date(','').replace(')/','') | date: 'dd/MM/yyyy' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul uib-pagination total-items="totalItems" items-per-page="10"
+                        boundary-links="false" direction-links="true"
+                        ng-model="currentPage" ng-change="pageChanged()"
+                        class="justify-content-center">
+                    </ul>
+                </div>
+            </div>
+        
         </div>
     </div>
-</div>
+ </div>
 
 
-
-@section Scripts{
-    <script>
+        @section Scripts{
+            <script>
         app.controller("ventaCtrl", function($scope, $http) {
             $scope.listaVentasBase = [];
             $scope.clientes = [];
@@ -171,6 +181,6 @@
             };
         });
 
-    </script>
+            </script>
 
-}
+        }
