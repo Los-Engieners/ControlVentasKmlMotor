@@ -335,8 +335,6 @@
     <Content Include="Fonts\feather.woff" />
     <Content Include="assets\js\bootstrap.min.js.map" />
     <Content Include="assets\js\popper.min.js.map" />
-    <Content Include="assets\scss\.sass-cache\87f88134b2e274406d696eddf2817a21a5f37943\style.scssc" />
-    <Content Include="assets\scss\.sass-cache\87f88134b2e274406d696eddf2817a21a5f37943\_variable.scssc" />
     <Content Include="assets\scss\base\basic_setup.scss" />
     <Content Include="assets\scss\base\Untitled-6" />
     <Content Include="assets\scss\components\login.scss" />
