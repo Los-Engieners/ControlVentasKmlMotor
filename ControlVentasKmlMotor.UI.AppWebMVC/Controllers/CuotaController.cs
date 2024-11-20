@@ -1,4 +1,4 @@
-﻿using ControlVentasKmlMotor.BL;
+﻿ using ControlVentasKmlMotor.BL;
 using ControlVentasKmlMotor.EN;
 using System;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace ControlVentasKmlMotor.UI.AppWebMVC.Controllers
             return Json(resultado, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ObtenerPorId(byte pId)
+        public ActionResult ObtenerPorId(short pId)
         {
             if (pId <= 0)
             {

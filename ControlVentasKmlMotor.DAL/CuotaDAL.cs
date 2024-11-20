@@ -91,7 +91,7 @@ namespace ControlVentasKmlMotor.DAL
             {
                 byte contador = 0;
                 string whereSQL = " ";
-                string consulta = @"SELECT TOP 100 c.Id, c.IdCuenta, c.Monto, c.Estado
+                string consulta = @"SELECT TOP 100 c.Id, c.IdCuenta, c.Monto, FechaHora, c.Estado
                                     FROM Cuotas c ";
 
                 // Filtros
@@ -128,13 +128,12 @@ namespace ControlVentasKmlMotor.DAL
                     if (contador > 0)
                         whereSQL += " AND ";
                     contador += 1;
-                    whereSQL += " c.FechaHora BETWEEN @FechaHoraIni AND @FechaHoraFin ";
+                    whereSQL += " c.FechaHora = @FechaHora";
                     DateTime fechaHoraIni = pCuota.FechaHora.Date + new TimeSpan(0, 0, 0);
-                    DateTime fechaHoraFin = pCuota.FechaHora.Date + new TimeSpan(23, 59, 59);
 
-                    comando.Parameters.AddWithValue("@FechaHoraIni", fechaHoraIni);
-                    comando.Parameters.AddWithValue("@FechaHoraFin", fechaHoraFin);
+                    comando.Parameters.AddWithValue("@FechaHora", fechaHoraIni);
                 }
+
 
                 if (pCuota.Estado > 0)
                 {

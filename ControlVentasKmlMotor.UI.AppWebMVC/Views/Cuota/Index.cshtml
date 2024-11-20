@@ -1,490 +1,166 @@
-﻿
-@{
-    ViewBag.Title = "Cuota";
+﻿@{
+    ViewBag.Title = "Historial de Cuotas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-<div ng-controller="ventaCtrl" ng-init="init()" class="row">
+<div ng-controller="cuotaCtrl" ng-init="init()" class="row">
     <div class="col-md-12">
         <div class="card shadow mb-4">
-            <div class="card-header">
-                <strong class="card-title">Venta</strong>
-            </div>
             <div class="card-body">
-                <form name="formVenta" class="needs-validation" novalidate>
-                    <div class="mt-3 text-center">
-                        <h2 class="mt-3 text-center">Registar venta</h2>
+                <form name="formCuota">
+                    <div class="col-lg-12 text-center">
+                        <h2>{{ titulo }}</h2>
                     </div>
                     <div class="form-row">
-                        <div class="col-md-2  col-12  ">
-                            <label class="form-label">No. Factura</label>
-                            <input type="number" class="form-control" ng-model="NoFactura" min="1" required>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end ">
-                            <button type="button" class="btn btn-success w-100" onclick="redirectToPage()">
-                                <i class="fas fa-user-plus"></i> Agregar Cliente
-                            </button>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Cliente</label>
-                            <div class="input-group">
-                                <input type="hidden" ng-model="IdCliente" />
-                                <input type="text" placeholder="Buscar cliente ..." ng-model="NombreCliente" class="form-control" readonly ng-click="modalCliente.open()" />
-                                <button type="button" class="btn btn-light border" ng-click="modalCliente.clear()">x</button>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Teléfono:</label>
-                            <input type="text" disabled class="form-control" ng-model="Telefono" />
+                        <!-- Selector de Cuenta para filtrar cuotas -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Cuenta:</label>
+                            <select class="form-control" ng-model="IdCuenta" required>
+                                <option value="" disabled selected>SELECCIONAR CUENTA</option>
+                                <option ng-repeat="cuenta in cuentas" ng-value="{{ cuenta.Id }}">{{ cuenta.Id }}</option>
+                            </select>
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label">Vehículo:</label>
-                            <select class="form-control" ng-model="IdVehiculo" ng-change="cargarPrecioAuto()" required>
-                                <option value="" disabled selected>SELECCIONAR</option>
-                                <option ng-repeat="obj in vehiculos" ng-value="{{ obj.Id }}">  {{ obj.Modelo.Nombre}} {{ obj.Modelo.Marca.Nombre }} {{ obj.Modelo.TipoAuto.Nombre}} Existencias: {{ obj.Existencias}}</option>
-                            </select>
+                        <!-- Campo para monto de la cuota -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Monto:</label>
+                            <input type="number" class="form-control" ng-model="monto" required />
                         </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Precio:</label>
-                            <input class="form-control" type="number" ng-model="Precio" placeholder="$ 00.00" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Tipo de pago:</label>
-                            <select class="form-control" ng-model="IdTipoPago" ng-change="calcularCuota()" required>
-                                <option value="" disabled selected>SELECCIONAR</option>
-                                <option ng-repeat="obj in tiposPago" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">No Cuotas:</label>
-                            <input class="form-control" type="number" ng-model="cuota" placeholder="N/A" min="1" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Sucursal:</label>
-                            <select class="form-control" ng-model="IdSucursal" required>
-                                <option value="" disabled selected>SELECCIONAR</option>
-                                <option ng-repeat="obj in sucursales" ng-value="{{ obj.Id }}">{{ obj.Nombre}} </option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="form-group col-md-6">
                             <label class="form-label">Fecha Hora</label>
                             <input class="form-control" type="date" ng-model="FechaHora" placeholder="dd/MM/yyyy" required>
                         </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-                            <button type="submit" class="btn btn-success" ng-click="guardar()">
-                                <i class="fas fa-save"></i>  Guardar
-                            </button>
+                        <div class="col-lg-12 col-12 text-center mt-3">
+                            <button type="button" class="btn btn-primary me-2" ng-click="buscar()">Buscar</button>
+                            <button type="button" class="btn btn-success me-2" ng-click="guardar()">Guardar Cuota</button>
                         </div>
-                    </div>
 
-                    <fieldset class="bg-light  row mt-4 mb-4">
-                        <legend>Detalles</legend>
-                        <div class="col-md-3">
-                            <label class="form-label">Servicio Extra:</label>
-                            <select class="form-control" ng-model="IdServicioExtra" ng-change="cargarPrecio()">
-                                <option value="" disabled selected>SELECCIONAR</option>
-                                <option ng-repeat="obj in serviciosExtra" ng-value="{{ obj.Id }}">{{ obj.Nombre }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <label class="form-label">Precio:</label>
-                            <input class="form-control" type="number" ng-model="PrecioServicio" placeholder="0.00" disabled />
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <label class="form-label">Cantidad:</label>
-                            <input class="form-control" type="number" ng-model="Cantidad" placeholder="0" min="1" />
-                        </div>
-                        <div class="col-md-1 d-flex align-items-end mb-2">
-                            <button type="button" class="btn btn-primary w-100" ng-click="agregar()">+</button>
-                        </div>
-                    </fieldset>
+                    </div>
                 </form>
 
-                <div ng-include="htmlCliente"> </div>
-
-
-                <div class="row justify-content-center mt-4">
-
-                    <div class="col-lg-12 col-12 table-responsive">
-
-
-                        <table class="table table-striped">
-                            <thead class="bg-dark text-white ">
-                                <tr>
-                                    <th>Servicio Extra</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                    <th>SubTotal</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="obj in detalles">
-                                    <td>{{ obj.ServicioExtra.Nombre }}</td>
-                                    <td>{{ obj.Precio | currency }}</td>
-                                    <td>{{ obj.Cantidad }}</td>
-                                    <td>{{ obj.SubTotal | currency }}</td>
-
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-danger" ng-click="quitar($index)"> X </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="mb-2">
-                                <tr class="mb-2">
-                                    <th colspan="2"></th>
-                                    <th>Total</th>
-                                    <th colspan="2">{{ total | currency }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+            </div>
+        </div>
+            <div class="row justify-content-center mt-3">
+                <div class="col-lg-12 col-12 table-responsive">
+                    <h3 class="mb-2 text-center">Historial de Cuotas</h3>
+                    <table class="table table-striped border">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th>Id</th>
+                                <th>Id Cuenta</th>
+                                <th>Monto</th>
+                                <th>Fecha y Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="cuota in listaCuotas">
+                                <td>{{ cuota.Id }}</td>
+                                <td>{{ cuota.IdCuenta }}</td>
+                                <td>{{ cuota.Monto | currency }}</td>
+                                <td>{{ cuota.FechaHora.replace('/Date(','').replace(')/','') | date: 'dd/MM/yyyy' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul uib-pagination total-items="totalItems" items-per-page="10"
+                        boundary-links="false" direction-links="true"
+                        ng-model="currentPage" ng-change="pageChanged()"
+                        class="justify-content-center">
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts {
-    <script>
-        app.controller("ventaCtrl", function ($scope, $http) {
-            $scope.dataForm = false;
+    @section Scripts {
+        <script>
+        app.controller("cuotaCtrl", function($scope, $http) {
+            $scope.listaCuotasBase = [];
+            $scope.cuentas = [];
+            $scope.listaCuotas = [];
+            $scope.currentPage = 1;
+            $scope.numPerPage = 10;
 
-            $scope.tiposPago = [];
+            $scope.init = function () {
+                $scope.buscar();
+                $scope.titulo = "Historial de Cuotas";
+                $scope.cargarCuentas();
+            };
 
-            $scope.detalles = [];
-            $scope.clientes = [];
-            $scope.vehiculos = [];
-            $scope.serviciosExtra = [];
-            $scope.sucursales = [];
-
-            $scope.htmlCliente = "/Cliente/Modal";
-            $scope.modalCliente = modalSelect($scope, $http, {
-                name: "modalCliente",
-                url: "/Cliente/Buscar",
-                model: "IdCliente",
-                modelText: "NombreCliente",
-                propFilter: "Nombre",
-                propFilterAux: "Apellido",
-                propChange: "Telefono"
-            });
-
-            $scope.cargarClientes = function () {
-                var request = {
-                    method : "POST",
-                    url : "@Url.Action("Buscar", "Cliente")",
-                    data : {}
-                }
-                $http(request).then(function (response) {
-                    $scope.clientes = angular.fromJson(response.data);
-                });
-            }
-
-            $scope.cargarVehiculos = function () {
-                var request = {
-                    method : "POST",
-                    url : "@Url.Action("Buscar", "Vehiculo")",
-                    data : { }
-                }
-                 $http(request).then(function (response) {
-                    $scope.vehiculos = angular.fromJson(response.data);
-                });
-            }
-
-            $scope.cargarTiposPago = function () {
+            // Cargar cuentas para el selector
+            $scope.cargarCuentas = function() {
                 var request = {
                     method: "POST",
-                    url: '@Url.Action("Buscar", "TipoPago")',
+                    url: "@Url.Action("Buscar", "Cuenta")",
                     data: {}
                 };
-                $http(request).then(function (response) {
-                    $scope.tiposPago = angular.fromJson(response.data);
+
+                $http(request).then(function(response) {
+                    $scope.cuentas = angular.fromJson(response.data);
                 });
+            };
 
-            }
-
-             $scope.cargarServiciosExtra = function () {
+            // Buscar cuotas por cuenta seleccionada
+            $scope.buscar = function() {
                 var request = {
-                    method : "POST",
-                    url : "@Url.Action("Buscar", "ServicioExtra")",
-                    data : { }
-                }
-                 $http(request).then(function (response) {
-                     $scope.serviciosExtra = angular.fromJson(response.data);
+                    method: "POST",
+                    url: "@Url.Action("Buscar", "Cuota")",
+                    data: { IdCuenta: $scope.IdCuenta }
+                };
+
+                $http(request).then(function(response) {
+                    $scope.listaCuotasBase = angular.fromJson(response.data);
+                    $scope.totalItems = $scope.listaCuotasBase.length;
+                    $scope.$watch("currentPage + numPerPage", function() {
+                        var inicioPag = (($scope.currentPage - 1) * $scope.numPerPage);
+                        var finPag = inicioPag + $scope.numPerPage;
+                        $scope.listaCuotas = $scope.listaCuotasBase.slice(inicioPag, finPag);
+                    });
                 });
-            }
+            };
 
-             $scope.cargarSucursales = function () {
-                var request = {
-                    method : "POST",
-                    url : "@Url.Action("Buscar", "Sucursal")",
-                    data : { }
-                }
-                 $http(request).then(function (response) {
-                     $scope.sucursales = angular.fromJson(response.data);
-                });
-            }
+            // Maneja el cambio de página en la paginación
+            $scope.pageChanged = function() {
+                var inicioPag = (($scope.currentPage - 1) * $scope.numPerPage);
+                var finPag = inicioPag + $scope.numPerPage;
+                $scope.listaCuotas = $scope.listaCuotasBase.slice(inicioPag, finPag);
+            };
 
-             $scope.cargarPrecio = function (p) {
-                if ($scope.IdServicioExtra > 0) {
+            // Guardar nueva cuota
+            $scope.guardar = function() {
+                if ($scope.formCuota.$valid) {
+                    var datos = {
+                        IdCuenta: $scope.IdCuenta,
+                        Monto: $scope.monto,
+                        FechaHora: $scope.FechaHora
 
-                    var selected = $scope.serviciosExtra.find((p) => p.Id == $scope.IdServicioExtra);
-                    $scope.NombreServicio = selected.Nombre;
-                    $scope.PrecioServicio = selected.Precio;
-                }
-                else {
-                    $scope.NombreServicio = '';
-                    $scope.PrecioServicio = '';
-                }
-            }
-
-            $scope.cargarPrecioAuto = function (p) {
-                if ($scope.IdVehiculo > 0) {
-
-                    var selected = $scope.vehiculos.find((p) => p.Id == $scope.IdVehiculo);
-                    $scope.NombreVehiculo = selected.Nombre;
-                    $scope.Precio = selected.Precio;
-                }
-                else {
-                    $scope.NombreVehiculo = '';
-                    $scope.Precio = '';
-                }
-            }
-
-            $scope.calcularTotal = function () {
-                $scope.total = 0;
-
-                for (var i = 0; i < $scope.detalles.length; i++) {
-                    console.log($scope.total);
-                    $scope.total += $scope.detalles[i].SubTotal;
-                }
-
-                if ($scope.Precio) {
-                    var precioConImpuesto = $scope.Precio + ($scope.Precio * 0.13); // Aplicar el 13% de impuesto
-                    $scope.total += precioConImpuesto;
-                }
-            }
-            $scope.calcularCuota = function () {
-                if ($scope.IdTipoPago == 1) {
-                    var cuota = $scope.Precio * 0.20;
-                    $scope.cuota = cuota;
-
-
-                }
-                else {
-                    $scope.cuota = "";
-                }
-            }
-
-            $scope.limpiar = function () {
-                $scope.NoFactura = '0';
-                $scope.IdCliente = '';
-                $scope.IdVehiculo = '';
-                $scope.IdTipoPago = '';
-                $scope.IdSucursal = '';
-                $scope.FechaHora = new Date();
-                $scope.cuota = '';
-                $scope.total = '0';
-                $scope.Estatus = 'FACTURADA';
-                //Detalles
-                $scope.IdServicioExtra = '';
-                $scope.NombreServicio = '';
-                $scope.Precio = '0';
-                $scope.PrecioServicio = '0';
-                $scope.Cantidad = '';
-                $scope.detalles = [];
-
-            }
-
-            $scope.agregar = function () {
-                if ($scope.IdServicioExtra > 0 && $scope.Cantidad > 0) {
-
-                    var detalleVenta = {
-                        //Id: $scope.Id,
-                        //NoFactura: $scope.NoFactura,
-                        IdServicioExtra: $scope.IdServicioExtra,
-                        ServicioExtra: { Nombre: $scope.NombreServicio },
-                        Cantidad: $scope.Cantidad,
-                        Precio: $scope.PrecioServicio,
-                        SubTotal: $scope.Cantidad * $scope.PrecioServicio,
                     };
-                    $scope.detalles.push(detalleVenta);
-                    $scope.calcularTotal();
 
-                    console.log(detalleVenta);
-                    console.log($scope.detalles);
-                    $scope.IdServicioExtra = '';
-                    $scope.PrecioServicio = '';
-                    $scope.Cantidad = '';
-                }
-                else {
-                    alert("Selecciona un servicio y completa los campos");
-                }
-            }
+                    var request = {
+                        method: "POST",
+                        url: "@Url.Action("Guardar", "Cuota")",
+                        data: datos
+                    };
 
-            $scope.quitar = function (index) {
-                if (confirm("¿Está seguro de quitar el vehículo de la lista? ")) {
-                    $scope.detalles.splice(index, 1);
-                    $scope.calcularTotal();
-
+                    $http(request).then(function(response) {
+                        $scope.aviso("Cuota guardada exitosamente", response);
+                        $scope.buscar(); // Recargar las cuotas
+                    }, function(response) {
+                        catchJS(response); // Manejo de errores
+                    });
                 }
-            }
-            $scope.aviso = function (texto, response) {
+            };
+
+            // Mostrar aviso al guardar
+            $scope.aviso = function(texto, response) {
                 var resultado = angular.fromJson(response.data);
                 validarResponse({
                     texto: texto,
                     resultado: resultado,
-                    func: function () {
+                    func: function() {
                         $scope.limpiar();
                     }
                 });
-            }
-            $scope.aviso2 = function (texto, response) {
-                var resultado = angular.fromJson(response.data);
-                validarResponseImprimir({
-                    texto: texto,
-                    resultado: resultado,
-                    func: function () {
-                        $scope.limpiar();
-                    }
-                });
-            }
-            $scope.guardar = function () {
-                if ($scope.formVenta.$valid) {
-
-                    if ($scope.detalles.length == 0) {
-                        alert("Para registrar una venta es necesario completar todos los campos ")
-                        return false;
-                    }
-                    var request = {
-                        method: "POST",
-                        url: "@Url.Action("Guardar", "Venta")",
-                        data: {
-                            NoFactura: $scope.NoFactura,
-                            IdCliente: $scope.IdCliente,
-                            IdVehiculo: $scope.IdVehiculo,
-                            Precio: $scope.Precio,
-                            IdTipoPago: $scope.IdTipoPago,
-                            IdSucursal: $scope.IdSucursal,
-                            FechaHora: $scope.FechaHora,
-                            Total: $scope.total,
-                            DetalleVentas: $scope.detalles,
-                        }
-                    };
-
-                    console.log($scope.total);
-                    console.log($scope.Total);
-
-
-                    $http(request).then(function (response) {
-                        $scope.aviso2("Venta registrada exitosamente", response);
-
-                    }, function (response) {
-                        catchJS(response);
-                    });
-
-                }
-            }
-            $scope.init = function () {
-
-                $scope.cargarTiposPago();
-
-                $scope.FechaHora = new Date();
-                $scope.total = '0';
-                $scope.cargarClientes();
-                $scope.cargarVehiculos();
-                $scope.cargarSucursales();
-                $scope.cargarServiciosExtra();
             };
-
-            function validarResponseImprimir(data) {
-                if (data.resultado == 1) {
-                    Swal2.fire({
-                        title: "Venta Exitosa",
-                        icon: "success",
-                        html:
-                            `<div id="imprimirDiv" style="text-align:left;">` +
-                            `<div style="text-align:center;">` +
-                            `<img src="/Images/logo.png" alt="Logo de KML Motor" style="width:100px; height:auto;" />` + // Aquí agregas la imagen
-                            `</div>` +
-                            `<h3 style="text-align:center;"><strong>KML Motor</strong></h3>` +
-                            `<h3 style="text-align:center;">Comprobante de Venta</h3>` +
-                            `<p><strong class="fw-bold">Factura No:</strong> ` + $scope.NoFactura + ` </p>` +
-                            `<p><strong class="card-title">Sucursal:</strong> ` + $scope.sucursales.find(c => c.Id === $scope.IdSucursal).Nombre + `</p>` +
-                            `<p><strong>Cliente:</strong> ` + $scope.clientes.find(c => c.Id === $scope.IdCliente).Nombre + ' ' + $scope.clientes.find(c => c.Id === $scope.IdCliente).Apellido + `</p>`  +
-                            `<p><strong>Fecha:</strong> ` + new Date($scope.FechaHora).toLocaleString() + `</p>` +
-                            `<hr/>` +
-                            `<h4>Detalle de la Venta:</h4>` +
-                            `<ul style="list-style:none; padding-left:0;">` +
-                            $scope.detalles.map(detalle =>
-                                `<li><strong>` + detalle.ServicioExtra.Nombre + `:</strong> $` + parseFloat(detalle.SubTotal).toFixed(2) + `</li>`
-                            ).join('') +
-                            `</ul>` +
-                            `<hr/>` +
-                            `<p><strong>Total:</strong> $` + parseFloat($scope.total).toFixed(2) + `</p>` +  // Asegurarse de que $scope.total sea numérico
-                            `<p style="text-align:center;">¡Gracias por su compra!</p>` +
-                            `</div>` +
-                            `<button class="btn btn-primary" onclick="imprimirDiv()">Imprimir Ticket</button>`
-                        ,
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        confirmButtonText: 'Imprimir',
-                        cancelButtonText: 'Cancelar',
-                        customClass: {
-                            confirmButton: 'btn btn-primary mx-2',
-                            cancelButton: 'btn btn-danger'
-                        },
-                        buttonsStyling: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            imprimirTicket(); // Función de impresión
-                        }
-                    });
-
-                    if (data.func != null) {
-                        data.func(); // Ejecuta cualquier función adicional
-                    }
-                } else {
-                    alertaError("Error", "Ocurrió un error al realizar la solicitud");
-                }
-            }
-
-
-
-
         });
-            // Función de imprimir
-
-            function imprimirDiv() {
-                // Obtener el contenido del div
-                var divContent = document.getElementById('imprimirDiv').innerHTML;
-
-                // Abrir una nueva ventana
-                var ventanaImprimir = window.open('', '', 'height=500,width=800');
-
-                // Escribir el contenido en la nueva ventana
-                ventanaImprimir.document.write('<html><head><title>Imprimir Div</title>');
-                ventanaImprimir.document.write('</head><body>');
-                ventanaImprimir.document.write(divContent);
-                ventanaImprimir.document.write('</body></html>');
-
-                // Cerrar el documento para que la ventana esté lista para imprimir
-                ventanaImprimir.document.close();
-
-                // Esperar un momento para cargar y luego ejecutar el comando de impresión
-                ventanaImprimir.focus();
-                ventanaImprimir.print();
-
-                // Cerrar la ventana después de la impresión
-                ventanaImprimir.close();
-            }
-
-            function redirectToPage() {
-                window.location.href = '/Cliente/Create';
-            }
-
-    </script>
-
-}
+        </script>
+    }

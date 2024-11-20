@@ -17,6 +17,16 @@ namespace ControlVentasKmlMotor.UI.AppWebMVC.Controllers
             return View();
         }
 
+        public ActionResult ObtenerPorId(short pId)
+        {
+            if (pId <= 0)
+            {
+                return Json(0, JsonRequestBehavior.AllowGet);
+            }
+
+            Cuenta obj = cuentaBL.ObtenerPorId(pId);
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Buscar(Cuenta pCuenta)
         {
             if (pCuenta == null)
