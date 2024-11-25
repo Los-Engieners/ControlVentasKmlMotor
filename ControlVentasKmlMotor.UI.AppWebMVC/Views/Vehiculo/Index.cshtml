@@ -50,10 +50,10 @@
                             </div>
                         </div>
                         <div class="col-md-6 mt-4" ng-hide="dataForm">
-                            <button type="button" class="btn btn-primary me-4" ng-click="buscar()">
+                            <button type="button" class="btn btn-outline-primary me-4" ng-click="buscar()">
                                 <i class="fas fa-search"></i> Buscar
                             </button>
-                            <button type="button" class="btn btn-success" ng-click="initForm()">
+                            <button type="button" class="btn btn-outline-success" ng-click="initForm()">
                                 <i class="fas fa-user-plus"></i> Nuevo
                             </button>
                         </div>
@@ -96,11 +96,11 @@
                                     </td>
 
                                     <td>
-                                        <button type="button" class="btn btn-warning mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
-                                            <i class="fa fa-pen text-white"></i>
+                                        <button type="button" class="btn mb-2 btn-outline-secondary mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
+                                            <i class="fe fe-edit"></i>
                                         </button>
-                                        <button type="button" class="btn btn-danger" ng-click="eliminar(obj.Id)">
-                                            <i class="fa fa-trash"></i>
+                                        <button type="button" class="btn mb-2 btn-outline-danger mb-2 mb-lg-0" ng-click="eliminar(obj.Id)">
+                                            <i class="fe fe-trash-2"></i>
                                         </button>
                                     </td>
                                 </tr>

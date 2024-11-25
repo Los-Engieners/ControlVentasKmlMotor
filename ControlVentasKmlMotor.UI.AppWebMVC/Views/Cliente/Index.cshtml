@@ -6,110 +6,125 @@
 
 
 <div ng-controller="clienteCtrl" ng-init="init()">
-
-    <form name="formCliente" class="row justify-content-center mt-2 pb-2">
-        <input type="hidden" ng-model="Id" ng-init="Id='0'" />
-        <div class="col-lg-12 text-center bg-light">
-            <h2>{{ titulo }}</h2>
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <strong class="card-title">Cliente</strong>
+            </div>
+            <div class="card-body">
+                <form name="formCliente" class="needs-validation" novalidate>
+                    <input type="hidden" ng-model="Id" ng-init="Id='0'" />
+                    <div class="col-lg-12 text-center ">
+                        <h2>{{ titulo }}</h2>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6" ng-show="dataForm">
+                            <label class="form-label">Género:</label>
+                            <select class="form-control" ng-model="IdGenero" required>
+                                <option value="" disabled selected>SELECCIONAR</option>
+                                <option ng-repeat="obj in generos" ng-value="{{ obj.Id }}">  {{ obj.Nombre}} </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="fw-bold">Nombre:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" required ng-model="Nombre" />
+                                @*<button type="button" class="btn btn-outline-secondary" ng-click="buscar()">
+                                    <i class="fe fe-search"></i>
+                                </button>*@
+                            </div>
+                        </div>
+                            <div class="form-group col-md-6" ng-show="dataForm">
+                                <label class="form-label">Apellido:</label>
+                                <input class="form-control" type="text" ng-model="Apellido" required>
+                            </div>
+                            <div class="form-group col-md-6" ng-show="dataForm">
+                                <label class="fw-bold">DUI:</label>
+                                <input type="text" class="form-control" placeholder="00000000-0" maxlength="10" pattern="^\d{8}-\d{1}$" required ng-model="DUI" />
+                            </div>
+                            <div class="form-group col-md-6" ng-show="dataForm">
+                                <label class="fw-bold">Teléfono:</label>
+                                <input type="text" class="form-control" maxlength="8" required ng-model="Telefono" />
+                            </div>
+                            <div class="form-group col-md-6" ng-show="dataForm">
+                                <label class="fw-bold">Fecha de Nacimiento:</label>
+                                <input type="date" class="form-control" placeholder="dd/MM/yyyy" ng-model="FechaNacimiento" />
+                            </div>
+                            <div class="form-group col-md-6" ng-show="dataForm">
+                                <label class="fw-bold">Dirección:</label>
+                                <input type="text" class="form-control" required ng-model="Direccion" />
+                            </div>
+                            <div class="form-group col-md-6 mt-4" ng-hide="dataForm">
+                                <button type="button" class="btn btn-outline-primary me-4" ng-click="buscar()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-outline-success" ng-click="initForm()">
+                                    <i class="fas fa-user-plus"></i> Nuevo
+                                </button>
+                            </div>
+                            <div class="col-lg-12 col-12 text-center mt-3" ng-show="dataForm">
+                                <button type="button" class="btn btn-success me-2" ng-click="guardar()">Guardar</button>
+                                <button type="button" class="btn btn-danger" ng-click="resetForm()">Cancelar</button>
+                            </div>
+                        </div>
+                </form>
+            </div>
         </div>
-        <div class="col-md-4" ng-show="dataForm">
-            <label class="form-label">Género:</label>
-            <select class="form-control" ng-model="IdGenero" required>
-                <option value="" disabled selected>SELECCIONAR</option>
-                <option ng-repeat="obj in generos" ng-value="{{ obj.Id }}">  {{ obj.Nombre}} </option>
-            </select>
-        </div>
-        <div class="col-lg-4 col-12 mt-2">
-            <label class="fw-bold">Nombre:</label>
-            <input type="text" class="form-control" required ng-model="Nombre" />
-        </div>
-        <div class="col-md-4" ng-show="dataForm">
-            <label class="form-label">Apellido:</label>
-            <input class="form-control" type="text" ng-model="Apellido" required>
-        </div>
-        <div class="col-lg-2 col-6 mt-2" ng-show="dataForm">
-            <label class="fw-bold">DUI:</label>
-            <input type="text" class="form-control" placeholder="00000000-0" maxlength="10" pattern="^\d{8}-\d{1}$" required ng-model="DUI" />
-        </div>
-        <div class="col-lg-2 col-6 mt-2" ng-show="dataForm">
-            <label class="fw-bold">Teléfono:</label>
-            <input type="text" class="form-control" maxlength="8" required ng-model="Telefono" />
-        </div>
-        <div class="col-lg-2 col-6 mt-2" ng-show="dataForm">
-            <label class="fw-bold">Fecha de Nacimiento:</label>
-            <input type="date" class="form-control" placeholder="dd/MM/yyyy" ng-model="FechaNacimiento" />
-        </div>
-
-
-        <div class="col-lg-4 col-6 mt-2" ng-show="dataForm">
-            <label class="fw-bold">Dirección:</label>
-            <input type="text" class="form-control" required ng-model="Direccion" />
-        </div>
-        <div class="col-lg-3 col-12 justify-content-center d-flex align-items-end mt-2" ng-hide="dataForm">
-            <button type="button" class="btn btn-primary me-2" ng-click="buscar()">
-                <i class="fas fa-search"></i> Buscar
-            </button>
-            <button type="button" class="btn btn-secondary" ng-click="initForm()">
-                <i class="fas fa-user-plus"></i> Nuevo
-            </button>
-        </div>
-        <div class="col-lg-12 col-12 text-center mt-3" ng-show="dataForm">
-            <button type="button" class="btn btn-success me-2" ng-click="guardar()">Guardar</button>
-            <button type="button" class="btn btn-danger" ng-click="resetForm()">Cancelar</button>
-        </div>
-    </form>
-
-    <div class="row justify-content-center mt-3" ng-hide="dataForm">
-        <div class="col-lg-12 col-12 table-responsive">
-            <h3 class="mb-2 text-center">Lista de Clientes</h3>
-            <table class="table table-striped border">
-                <thead class="bg-dark text-white ">
-                    <tr>
-                        <th>Id</th>
-                        <th>Género</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>DUI</th>
-                        <th>Teléfono</th>
-                        <th>Fecha Nacimiento</th>
-                        <th>Dirección</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="obj in lista ">
-                        <td>{{ obj.Id }}</td>
-                        <td>{{ obj.Genero.Nombre }}</td>
-                        <td>{{ obj.Nombre }}</td>
-                        <td>{{ obj.Apellido }}</td>
-                        <td>{{ obj.DUI }}</td>
-                        <td>{{ obj.Telefono }}</td>
-                        <td>{{ obj.FechaNacimiento.replace('/Date(','').replace(')/','') | date: 'dd/MM/yyyy' }}</td>
-                        <td>{{ obj.Direccion }}</td>
-                        <td>
-                            <button type="button" class="btn btn-warning mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
-                                <i class="fa fa-pen text-white"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" ng-click="eliminar(obj.Id)">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul uib-pagination total-items="totalItems" items-per-page="10"
-                boundary-links="false" direction-links="true"
-                ng-model="currentPage" ng-change="pageChanged()"
-                class="justify-content-center">
-            </ul>
+            <div class="row my-4" ng-hide="dataForm">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h3 class="mb-2 text-center">Lista de Clientes</h3>
+                            <table class="table datatables" id="dataTable-1">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Género</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>DUI</th>
+                                        <th>Teléfono</th>
+                                        <th>Fecha Nacimiento</th>
+                                        <th>Dirección</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="obj in lista ">
+                                        <td>{{ obj.Id }}</td>
+                                        <td>{{ obj.Genero.Nombre }}</td>
+                                        <td>{{ obj.Nombre }}</td>
+                                        <td>{{ obj.Apellido }}</td>
+                                        <td>{{ obj.DUI }}</td>
+                                        <td>{{ obj.Telefono }}</td>
+                                        <td>{{ obj.FechaNacimiento.replace('/Date(','').replace(')/','') | date: 'dd/MM/yyyy' }}</td>
+                                        <td>{{ obj.Direccion }}</td>
+                                        <td>
+                                            <button type="button" class="btn mb-2 btn-outline-secondary mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
+                                                <i class="fe fe-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn mb-2 btn-outline-danger mb-2 mb-lg-0" ng-click="eliminar(obj.Id)">
+                                                <i class="fe fe-trash-2"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ul uib-pagination total-items="totalItems" items-per-page="10"
+                                boundary-links="false" direction-links="true"
+                                ng-model="currentPage" ng-change="pageChanged()"
+                                class="justify-content-center">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-</div>
+    @section Scripts {
 
-@section Scripts {
-
-    <script>
+        <script>
             app.controller("clienteCtrl", function ($scope, $http, $window) {
                 $scope.dataForm = false;
 
@@ -325,5 +340,5 @@
 
 
             });
-    </script>
-}
+        </script>
+    }

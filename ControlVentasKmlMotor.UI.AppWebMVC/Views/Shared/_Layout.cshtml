@@ -79,6 +79,7 @@
                         <span class="dot dot-md bg-success"></span>
                     </a>
                 </li>*@
+
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item dropdown">
@@ -88,12 +89,12 @@
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="#">
+                            @*<a class="dropdown-item" href="#">
                                 <i class="fe fe-16 fe-user ms-2"></i> Perfil
-                            </a>
-                            <a class="dropdown-item" href="#">
+                            </a>*@
+                            @*<a class="dropdown-item" href="#">
                                 <i class="fe fe-16 fe-settings ms-2"></i> Ajustes
-                            </a>
+                            </a>*@
                             <a class="dropdown-item" href="~/Login/Salir">
                                 <i class="fe fe-16 fe-log-out ms-2"></i> Cerrar Sesión
                             </a>
@@ -183,6 +184,16 @@
                                     <a class="nav-link pl-3" href="~/Cliente/Index"><span class="ml-1 item-text">Registrar Cliente</span></a>
                                 </li>
                             </ul>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="tables">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" href="~/Cuenta/Index"><span class="ml-1 item-text">Cuentas</span></a>
+                                </li>
+                            </ul>
+                            <ul class="collapse list-unstyled pl-4 w-100" id="tables">
+                                <li class="nav-item">
+                                    <a class="nav-link pl-3" href="~/Cuota/Index"><span class="ml-1 item-text">Registra Cuota</span></a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a href="#charts" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
@@ -225,7 +236,7 @@
                                     </a>
                                     <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements">
                                         <li class="nav-item">
-                                            <a class="nav-link pl-3" href="~/Venta/Index"><span class="ml-1 item-text">Index</span> </a>
+                                            <a class="nav-link pl-3" href="~/Venta/Index"><span class="ml-1 item-text">Registrar Venta</span> </a>
                                         </li>
                                     </ul>
                                 </li>
@@ -236,7 +247,17 @@
                                     </a>
                                     <ul class="collapse list-unstyled pl-4 w-100" id="tables">
                                         <li class="nav-item">
-                                            <a class="nav-link pl-3" href="~/Cliente/Index"><span class="ml-1 item-text">Index</span></a>
+                                            <a class="nav-link pl-3" href="~/Cliente/Index"><span class="ml-1 item-text">Registrar Cliente</span></a>
+                                        </li>
+                                    </ul>
+                                    <ul class="collapse list-unstyled pl-4 w-100" id="tables">
+                                        <li class="nav-item">
+                                            <a class="nav-link pl-3" href="~/Cuenta/Index"><span class="ml-1 item-text">Cuenta</span></a>
+                                        </li>
+                                    </ul>
+                                    <ul class="collapse list-unstyled pl-4 w-100" id="tables">
+                                        <li class="nav-item">
+                                            <a class="nav-link pl-3" href="~/Cuota/Index"><span class="ml-1 item-text">Cuota</span></a>
                                         </li>
                                     </ul>
                                 </li>

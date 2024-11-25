@@ -40,10 +40,10 @@
                             <div class="invalid-feedback"> Por favor ingrese el nombre del modelo. </div>
                         </div>
                         <div class="col-md-6 mt-4" ng-hide="dataForm">
-                            <button type="button" class="btn btn-primary me-4" ng-click="buscar()">
+                            <button type="button" class="btn btn-outline-primary me-4" ng-click="buscar()">
                                 <i class="fas fa-search"></i> Buscar
                             </button>
-                            <button type="button" class="btn btn-secondary" ng-click="initForm()">
+                            <button type="button" class="btn btn-outline-success" ng-click="initForm()">
                                 <i class="fas fa-user-plus"></i> Nuevo
                             </button>
                         </div>
@@ -79,11 +79,11 @@
                                     <td>{{ obj.TipoAuto.Nombre }}</td>
                                     <td>{{ obj.Nombre }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-warning mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
-                                            <i class="fa fa-pen text-white"></i>
+                                        <button type="button" class="btn mb-2 btn-outline-secondary mb-2 mb-lg-0" ng-click="obtenerPorId(obj.Id)">
+                                            <i class="fe fe-edit"></i>
                                         </button>
-                                        <button type="button" class="btn btn-danger" ng-click="eliminar(obj.Id)">
-                                            <i class="fa fa-trash"></i>
+                                        <button type="button" class="btn mb-2 btn-outline-danger mb-2 mb-lg-0" ng-click="eliminar(obj.Id)">
+                                            <i class="fe fe-trash-2"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -135,7 +135,8 @@
               }
 
               $scope.init = function () {
-                $scope.titulo = "Buscar Modelos"
+                  $scope.titulo = "Buscar Modelos"
+                  $scope.buscar();
                   $scope.cargarMarcas();
                   $scope.cargarTipoAutos();
 
@@ -234,7 +235,7 @@
                           var request = {
                             method: "POST",
                             url: "@Url.Action("Modificar", "Modelo")",
-                            data: datos,
+                            data: datos
                           };
 
                           $http(request).then(function (response) {
@@ -271,22 +272,47 @@
                 });
               }
 
-              $scope.eliminar = function (id) {
-                if (confirm("¿Está seguro de eliminar el registro seleccionado?")) {
+                    $scope.eliminar = function (Id) {
+               // Mostrar cuadro de confirmación
+               Swal.fire({
+                   title: '¿Estás seguro?',
+                   text: "¡No podrás revertir esta acción!",
+                   icon: 'warning',
+                   showCancelButton: true,
+                   confirmButtonColor: '#3085d6',
+                   cancelButtonColor: '#d33',
+                   confirmButtonText: 'Sí, eliminarlo',
+                   cancelButtonText: 'Cancelar'
+               }).then((result) => {
+                   if (result.isConfirmed) {
+                       // Si el usuario confirma, se procede con la eliminación
+                       var request = {
+                           method: "POST",
+                           url: "@Url.Action("Eliminar", "Modelo")",
+                           data: { Id: Id }
+                       };
 
-                    var request = {
-                        method: "POST",
-                        url: "@Url.Action("Eliminar", "Modelo")",
-                        data: { Id: id },
-                    };
-                    $http(request).then(function (response) {
-                        $scope.aviso("Registro eliminado exitosamente", response);
+                       $http(request).then(function (response) {
+                           $scope.buscar(); // Recargar la lista de vehículos
+                           $scope.aviso('Eliminado exitosamente', response.data);
 
-                    }, function (response) {
-                        catchJS(response);
-                    });
-                }
-              }
+                           // Mostrar mensaje de confirmación con SweetAlert
+                           Swal.fire(
+                               '¡Eliminado!',
+                               'El vehículo ha sido eliminado.',
+                               'success'
+                           );
+                       }, function (error) {
+                           // Manejo de errores
+                           Swal.fire(
+                               'Error',
+                               'Hubo un problema al eliminar el vehículo.',
+                               'error'
+                           );
+                       });
+                   }
+               });
+           }
 
             });
     </script>
