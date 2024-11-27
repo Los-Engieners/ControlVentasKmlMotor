@@ -27,11 +27,12 @@ namespace ControlVentasKmlMotor.DAL
         public static int Modificar(Vehiculo pVehiculo)
         {
             SqlCommand comando = ComunDB.ObtenerComando();
-            comando.CommandText = "UPDATE Vehiculos SET IdModelo=@IdModelo, IdColor=@IdColor, FechaLanzamiento=@FechaLanzamiento, Precio=@Precio, Imagen=@Imagen WHERE Id=@Id";
+            comando.CommandText = "UPDATE Vehiculos SET IdModelo=@IdModelo, IdColor=@IdColor, FechaLanzamiento=@FechaLanzamiento, Precio=@Precio, Existencias=@Existencias, Imagen=@Imagen WHERE Id=@Id";
             comando.Parameters.AddWithValue("@IdModelo", pVehiculo.IdModelo);
             comando.Parameters.AddWithValue("@IdColor", pVehiculo.IdColor);
             comando.Parameters.AddWithValue("@FechaLanzamiento", pVehiculo.FechaLanzamiento);
             comando.Parameters.AddWithValue("@Precio", pVehiculo.Precio);
+            comando.Parameters.AddWithValue("@Existencias", pVehiculo.Existencias);
             comando.Parameters.AddWithValue("@Imagen", pVehiculo.Imagen);
             comando.Parameters.AddWithValue("@Id", pVehiculo.Id);
             return ComunDB.EjecutarComando(comando);

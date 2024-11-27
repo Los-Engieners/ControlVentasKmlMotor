@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace ControlVentasKmlMotor.UI.AppWebMVC.Controllers
 {
+    [Authorize]
     public class EmpleadoController : Controller
     {
         // GET: Empleado

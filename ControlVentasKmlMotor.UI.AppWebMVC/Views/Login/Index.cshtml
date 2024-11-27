@@ -8,50 +8,71 @@
 }
 
 <head>
-    <link href="~/Content/login.css" rel="stylesheet" />
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="~/Images/LogoKMLMotor.ico">
+    <title>Iniciar Sesión</title>
+    <!-- Simple bar CSS -->
+    <link rel="stylesheet" href="~/css/simplebar.css">
+    <!-- Fonts CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="~/css/feather.css">
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="~/css/daterangepicker.css">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="~/css/app-light.css" id="lightTheme">
+    <link rel="stylesheet" href="~/css/app-dark.css" id="darkTheme" disabled>
 
 </head>
-<body>
+<body class="light">
 
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="wrapper vh-100">
+        <div class="row align-items-center h-100">
+            <form class="col-lg-3 col-md-4 col-10 mx-auto text-center" method="post" action="@Url.Action("Index","Login")">
+                <img src="~/Images/kmlbrandlogo.png" class="img-fluid" style="width: 250px;">
 
-        <div class="row border rounded-5 p-3 bg-white shadow box-area">
-
-            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #6d8ce8;">
-                <div class="featured-image mb-3">
-                    <img src="~/Images/kmlbrandlogo.png" class="img-fluid" style="width: 250px;">
+                @if (ViewBag.msg != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.msg</div>
+                }
+                <p>Inicia sesión para validar tu información</p>
+                <div class="form-group">
+                    <label for="inputEmail">Ingrese su correo electrónico:</label>
+                    <input type="email" name="CorreoElectronico" value="@Model.CorreoElectronico" class="form-control form-control-lg" placeholder="Correo Electrónico" required="" autofocus="">
                 </div>
-                <h4 class="text-white fs-2 text-wrap text-center" style=" font-weight: 600;">Bienvenido al sistema control de ventas KML Motor</h4>
-            </div>
-
-
-            <div class="col-md-6 right-box">
-                <div class="row align-items-center">
-                    <div class="header-text mb-4">
-                        <h2>Iniciar Sesión</h2>
-                        @if (ViewBag.msg != null)
-                        {
-                            <div class="alert alert-danger">@ViewBag.msg</div>
-                        }
-                        <p>Inicia sesión para validar tu información</p>
-                    </div>
-                    <form method="post" action="@Url.Action("Index","Login")">
-                        <div class="input-group mb-3">
-                            <input type="text" name="CorreoElectronico" value="@Model.CorreoElectronico" class="form-control  form-control-lg bg-light fs-6" placeholder="Correo Electrónico" required>
-                        </div>
-                        <div class="input-group mb-4">
-                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Clave" name="Clave" required>
-                        </div>
-                        <div class="input-group mb-3">
-                            <button class="btn btn-lg btn-primary w-100 fs-6">Ingresar</button>
-                        </div>
-                    </form>
-
+                <div class="form-group">
+                    <label for="inputPassword">Ingrese su clave:</label>
+                    <input type="password"  name="Clave" class="form-control form-control-lg" placeholder="Clave" required="">
                 </div>
-            </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button>
+                <p class="mt-5 mb-3 text-muted">© KML Motor 2024</p>
+            </form>
         </div>
     </div>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/simplebar.min.js"></script>
+    <script src="~/js/daterangepicker.js"></script>
+    <script src="~/js/jquery.stickOnScroll.js"></script>
+    <script src="~/js/tinycolor-min.js"></script>
+    <script src="~/js/config.js"></script>
+    <script src="~/js/apps.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56159088-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-56159088-1');
+    </script>
 
 
 </body>

@@ -162,6 +162,7 @@
     <Content Include="css\fullcalendar.css" />
     <Content Include="css\jquery.steps.css" />
     <Content Include="css\jquery.timepicker.css" />
+    <Content Include="css\login2.css" />
     <Content Include="css\perfect-scrollbar.css" />
     <Content Include="css\quill.snow.css" />
     <Content Include="css\select2-bootstrap4.css" />
@@ -187,11 +188,13 @@
     <Content Include="Images\KML.ico" />
     <Content Include="Images\kmlbrandlogo.png" />
     <Content Include="Images\logo.png" />
+    <Content Include="Images\logo2.png" />
     <Content Include="Images\LogoKMLMotor.ico" />
     <Content Include="Images\LogoKMLMotor.png" />
     <Content Include="Images\Luis.jpg" />
     <Content Include="Images\Maira.jpeg" />
     <Content Include="Images\maira2.jpeg" />
+    <Content Include="Images\publicidad1.jpg" />
     <Content Include="Images\teckatherine1.jpg" />
     <Content Include="Images\tecmaira1.jpg" />
     <Content Include="Images\tecmaira2.jpg" />
